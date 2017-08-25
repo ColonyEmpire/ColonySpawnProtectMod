@@ -17,41 +17,18 @@ namespace ScarabolMods
     public static string PERMISSION_SUPER = "mods.scarabol.spawnprotect";
     public static string PERMISSION_SPAWN_CHANGE = PERMISSION_SUPER + ".spawnchange";
     public static string PERMISSION_BANNER_PREFIX = PERMISSION_SUPER + ".banner.";
-    private static int SpawnProtectionRangeX = 50;
-    private static int SpawnProtectionRangeZ = 50;
+    private static int SpawnProtectionRangeXP = 50;
+    private static int SpawnProtectionRangeXM = 50;
+    private static int SpawnProtectionRangeZP = 50;
+    private static int SpawnProtectionRangeZM = 50;
     private static int BannerProtectionRangeX = 50;
     private static int BannerProtectionRangeZ = 50;
 
     [ModLoader.ModCallback(ModLoader.EModCallbackType.OnAssemblyLoaded, "scarabol.spawnprotect.assemblyload")]
     public static void OnAssemblyLoaded(string path)
     {
-      JSONNode jsonConfig;
-      if (Pipliz.JSON.JSON.Deserialize(Path.Combine(Path.GetDirectoryName(path), "protection-ranges.json"), out jsonConfig, false)) {
-        if (!jsonConfig.TryGetAs<int>("SpawnProtectionRangeX", out SpawnProtectionRangeX)) {
-          Pipliz.Log.Write(string.Format("Could not get spawn protection x-range from json config, using default value {0}", SpawnProtectionRangeX));
-        }
-        if (!jsonConfig.TryGetAs<int>("SpawnProtectionRangeZ", out SpawnProtectionRangeZ)) {
-          Pipliz.Log.Write(string.Format("Could not get spawn protection z-range from json config, using default value {0}", SpawnProtectionRangeZ));
-        }
-        if (!jsonConfig.TryGetAs<int>("BannerProtectionRangeX", out BannerProtectionRangeX)) {
-          Pipliz.Log.Write(string.Format("Could not get banner protection x-range from json config, using default value {0}", BannerProtectionRangeX));
-        }
-        if (!jsonConfig.TryGetAs<int>("BannerProtectionRangeZ", out BannerProtectionRangeZ)) {
-          Pipliz.Log.Write(string.Format("Could not get banner protection z-range from json config, using default value {0}", BannerProtectionRangeZ));
-        }
-      } else {
-        Pipliz.Log.Write("Could not find protection-ranges.json file");
-      }
-      Pipliz.Log.Write(string.Format("Using spawn protection with x-range {0}", SpawnProtectionRangeX));
-      Pipliz.Log.Write(string.Format("Using spawn protection with z-range {0}", SpawnProtectionRangeZ));
-      Pipliz.Log.Write(string.Format("Using banner protection with x-range {0}", BannerProtectionRangeX));
-      Pipliz.Log.Write(string.Format("Using banner protection with z-range {0}", BannerProtectionRangeZ));
-    }
-
-    [ModLoader.ModCallback(ModLoader.EModCallbackType.AfterStartup, "scarabol.spawnprotect.registercallbacks")]
-    public static void AfterStartup()
-    {
-      Pipliz.Log.Write("Loaded SpawnProtect Mod 0.9.2 by Scarabol");
+      Pipliz.Log.Write("Loaded SpawnProtect Mod 0.9.3 by Scarabol");
+      LoadRangesFromJSON(path);
     }
 
     [ModLoader.ModCallback(ModLoader.EModCallbackType.OnTryChangeBlockUser, "scarabol.spawnprotect.trychangeblock")]
@@ -59,7 +36,9 @@ namespace ScarabolMods
       Players.Player requestedBy = d.requestedBy;
       Vector3Int position = d.VoxelToChange;
       Vector3Int spawn = TerrainGenerator.GetSpawnLocation();
-      if (System.Math.Abs(spawn.x - position.x) <= SpawnProtectionRangeX && System.Math.Abs(spawn.z - position.z) <= SpawnProtectionRangeZ) {
+      int ox = spawn.x - position.x;
+      int oz = spawn.z - position.z;
+      if (((ox >= 0 && ox < SpawnProtectionRangeXP) || (ox < 0 && ox > -SpawnProtectionRangeXM)) && ((oz >= 0 && oz < SpawnProtectionRangeZP) || (oz < 0 && oz > -SpawnProtectionRangeZM))) {
         if (!PermissionsManager.HasPermission(requestedBy, PERMISSION_SPAWN_CHANGE)) {
           Chat.Send(requestedBy, "<color=red>You don't have permission to change the spawn area!</color>");
           // TODO add counter and report to admins
@@ -90,6 +69,57 @@ namespace ScarabolMods
     public static void AfterItemTypesServer()
     {
       ChatCommands.CommandManager.RegisterCommand(new SpawnProtectChatCommand());
+    }
+
+    public static void LoadRangesFromJSON(string path)
+    {
+      JSONNode jsonConfig;
+      if (Pipliz.JSON.JSON.Deserialize(Path.Combine(Path.GetDirectoryName(path), "protection-ranges.json"), out jsonConfig, false)) {
+        int rx;
+        if (jsonConfig.TryGetAs<int>("SpawnProtectionRangeXP", out rx)) {
+          SpawnProtectionRangeXP = rx;
+        } else if (jsonConfig.TryGetAs<int>("SpawnProtectionRangeX", out rx)) {
+          SpawnProtectionRangeXP = rx;
+        } else {
+          Pipliz.Log.Write(string.Format("Could not get SpawnProtectionRangeXP or SpawnProtectionRangeX from json config, using default value {0}", SpawnProtectionRangeXP));
+        }
+        if (jsonConfig.TryGetAs<int>("SpawnProtectionRangeXM", out rx)) {
+          SpawnProtectionRangeXM = rx;
+        } else if (jsonConfig.TryGetAs<int>("SpawnProtectionRangeX", out rx)) {
+          SpawnProtectionRangeXM = rx;
+        } else {
+          Pipliz.Log.Write(string.Format("Could not get SpawnProtectionRangeXM or SpawnProtectionRangeX from json config, using default value {0}", SpawnProtectionRangeXM));
+        }
+        int rz;
+        if (jsonConfig.TryGetAs<int>("SpawnProtectionRangeZP", out rz)) {
+          SpawnProtectionRangeZP = rz;
+        } else if (jsonConfig.TryGetAs<int>("SpawnProtectionRangeZ", out rz)) {
+          SpawnProtectionRangeZP = rz;
+        } else {
+          Pipliz.Log.Write(string.Format("Could not get SpawnProtectionRangeZP or SpawnProtectionRangeZ from json config, using default value {0}", SpawnProtectionRangeZP));
+        }
+        if (jsonConfig.TryGetAs<int>("SpawnProtectionRangeZM", out rz)) {
+          SpawnProtectionRangeZM = rz;
+        } else if (jsonConfig.TryGetAs<int>("SpawnProtectionRangeZ", out rz)) {
+          SpawnProtectionRangeZM = rz;
+        } else {
+          Pipliz.Log.Write(string.Format("Could not get SpawnProtectionRangeZM or SpawnProtectionRangeZ from json config, using default value {0}", SpawnProtectionRangeZM));
+        }
+        if (!jsonConfig.TryGetAs<int>("BannerProtectionRangeX", out BannerProtectionRangeX)) {
+          Pipliz.Log.Write(string.Format("Could not get banner protection x-range from json config, using default value {0}", BannerProtectionRangeX));
+        }
+        if (!jsonConfig.TryGetAs<int>("BannerProtectionRangeZ", out BannerProtectionRangeZ)) {
+          Pipliz.Log.Write(string.Format("Could not get banner protection z-range from json config, using default value {0}", BannerProtectionRangeZ));
+        }
+      } else {
+        Pipliz.Log.Write("Could not find protection-ranges.json file");
+      }
+      Pipliz.Log.Write(string.Format("Using spawn protection with x+ range {0}", SpawnProtectionRangeXP));
+      Pipliz.Log.Write(string.Format("Using spawn protection with x- range {0}", SpawnProtectionRangeXM));
+      Pipliz.Log.Write(string.Format("Using spawn protection with z+ range {0}", SpawnProtectionRangeZP));
+      Pipliz.Log.Write(string.Format("Using spawn protection with z- range {0}", SpawnProtectionRangeZM));
+      Pipliz.Log.Write(string.Format("Using banner protection with x-range {0}", BannerProtectionRangeX));
+      Pipliz.Log.Write(string.Format("Using banner protection with z-range {0}", BannerProtectionRangeZ));
     }
   }
 
