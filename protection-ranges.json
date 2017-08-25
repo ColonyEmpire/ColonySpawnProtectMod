@@ -1,0 +1,6 @@
+{
+  "SpawnProtectionRangeX" : 50,
+  "SpawnProtectionRangeZ" : 50,
+  "BannerProtectionRangeX" : 50,
+  "BannerProtectionRangeZ" : 50
+}
