@@ -51,7 +51,7 @@ namespace ScarabolMods
     [ModLoader.ModCallback(ModLoader.EModCallbackType.AfterStartup, "scarabol.spawnprotect.registercallbacks")]
     public static void AfterStartup()
     {
-      Pipliz.Log.Write("Loaded SpawnProtect Mod 0.9 by Scarabol");
+      Pipliz.Log.Write("Loaded SpawnProtect Mod 0.9.2 by Scarabol");
     }
 
     [ModLoader.ModCallback(ModLoader.EModCallbackType.OnTryChangeBlockUser, "scarabol.spawnprotect.trychangeblock")]
@@ -86,7 +86,7 @@ namespace ScarabolMods
       return true;
     }
 
-    [ModLoader.ModCallback(ModLoader.EModCallbackType.AfterItemTypesServer, "scarabol.spawnprotect.registertypes</color>")]
+    [ModLoader.ModCallback(ModLoader.EModCallbackType.AfterItemTypesServer, "scarabol.spawnprotect.registertypes")]
     public static void AfterItemTypesServer()
     {
       ChatCommands.CommandManager.RegisterCommand(new SpawnProtectChatCommand());

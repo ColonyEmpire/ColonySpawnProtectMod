@@ -1,6 +1,6 @@
 # important variables
 modname = SpawnProtect
-version = 0.9
+version = 0.9.2
 
 moddir = Scarabol/$(modname)
 zipname = Colony$(modname)Mod-$(version)-mods.zip
@@ -23,7 +23,7 @@ all: clean default enable
 
 release: default
 	rm -f "$(zipname)"
-	cd ../../ && zip -r "$(moddir)/$(zipname)" "$(moddir)/modInfo.json" "$(moddir)/$(dllname)"
+	cd ../../ && zip -r "$(moddir)/$(zipname)" "$(moddir)/modInfo.json" "$(moddir)/$(dllname)" "$(moddir)/protection-ranges.json"
 
 client: default enable
 	cd ../../../../ && ./colonyclient.x86_64

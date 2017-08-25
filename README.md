@@ -4,7 +4,7 @@ This mods adds spawn protection and banner protection to your server. Griefers c
 
 ## Configuration
 
-The mod directory contains a json file (**protection-ranges.json**) to configure the mod protection ranges on x and z axis. The y axis (height/depth) is not protected at all.
+The mod directory contains a json file (**protection-ranges.json**) to configure the mod protection ranges on x and z axis. The y axis (height/depth) is protected from bedrock to the sky.
 
 ## Permissions
 
