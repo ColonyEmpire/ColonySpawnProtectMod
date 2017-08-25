@@ -1,6 +1,6 @@
 # important variables
 modname = SpawnProtect
-version = 0.9.4
+version = 0.9.5
 
 moddir = Scarabol/$(modname)
 zipname = Colony$(modname)Mod-$(version)-mods.zip
