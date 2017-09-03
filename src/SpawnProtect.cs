@@ -28,7 +28,7 @@ namespace ScarabolMods
     [ModLoader.ModCallback(ModLoader.EModCallbackType.OnAssemblyLoaded, "scarabol.spawnprotect.assemblyload")]
     public static void OnAssemblyLoaded(string path)
     {
-      Pipliz.Log.Write("Loaded SpawnProtect Mod 0.9.5 by Scarabol");
+      Pipliz.Log.Write("Loaded SpawnProtect Mod 0.9.6 by Scarabol");
       LoadRangesFromJSON(path);
     }
 
